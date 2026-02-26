@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Compressor - Visual Interface</title>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗜️ Array Compressor</h1>
+            <p>Compress arrays of integers (1-300) using combinatorial encoding with Base94</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Message Display -->
+            <div id="message" class="message"></div>
+
+            <!-- Input Section -->
+            <div class="section">
+                <h2 class="section-title">Input Data</h2>
+                <div class="input-section">
+                    <div class="input-group">
+                        <label for="inputArray">Enter numbers (comma-separated):</label>
+                        <textarea id="inputArray" placeholder="Example: 1, 5, 10, 15, 20, 25, 30, 35, 40, 45"></textarea>
+                        
+                        <div class="buttons-grid">
+                            <button class="btn-primary" onclick="compressArray()">Compress</button>
+                            <button class="btn-secondary" onclick="decompressArray()">Decompress</button>
+                            <button class="btn-success" onclick="generateRandom()">Generate Random</button>
+                            <button class="btn-info" onclick="roundTripTest()">Round Trip Test</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Preset Test Cases:</label>
+                        <div class="buttons-grid">
+                            <button class="btn-preset" onclick="loadPreset('minimal')">Minimal (5)</button>
+                            <button class="btn-preset" onclick="loadPreset('userExample')">User Example</button>
+                            <button class="btn-preset" onclick="loadPreset('random50')">Random 50</button>
+                            <button class="btn-preset" onclick="loadPreset('random100')">Random 100</button>
+                            <button class="btn-preset" onclick="loadPreset('random200')">Random 200</button>
+                            <button class="btn-preset" onclick="loadPreset('large')">Large (500)</button>
+                        </div>
+
+                        <div class="validation-info">
+                            <h4>📋 Validation Rules:</h4>
+                            <ul>
+                                <li>Numbers must be between <strong>1 and 300</strong></li>
+                                <li>Array length must be between <strong>5 and 1000</strong></li>
+                                <li>Duplicates are allowed (will be sorted)</li>
+                                <li>Enter numbers separated by commas or spaces</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="section">
+                <h2 class="section-title">Output Results</h2>
+                <div class="output-section">
+                    <div>
+                        <span class="output-label">Original Array (sorted):</span>
+                        <div id="originalOutput" class="output-box original"></div>
+                    </div>
+
+                    <div>
+                        <span class="output-label">Compressed String:</span>
+                        <div id="compressedOutput" class="output-box compressed"></div>
+                    </div>
+
+                    <div>
+                        <span class="output-label">Decompressed Array (verification):</span>
+                        <div id="decompressedOutput" class="output-box decompressed"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="section">
+                <h2 class="section-title">Compression Statistics</h2>
+                <div class="statistics">
+                    <div class="stat-card">
+                        <div id="originalLength" class="stat-value">0</div>
+                        <div class="stat-label">Original Length (chars)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div id="compressedLength" class="stat-value">0</div>
+                        <div class="stat-label">Compressed Length (chars)</div>
+                    </div>
+                    <div class="stat-card" id="ratioCard">
+                        <div id="compressionRatio" class="stat-value">0:1</div>
+                        <div class="stat-label">Compression Ratio</div>
+                    </div>
+                    <div class="stat-card" id="percentageCard">
+                        <div id="compressionPercentage" class="stat-value">0%</div>
+                        <div class="stat-label">Compression %</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Array Compressor - TypeScript Implementation | Supports arrays of length 5-1000 with values 1-300</p>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
