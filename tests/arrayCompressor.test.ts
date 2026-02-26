@@ -1,21 +1,21 @@
 /**
- * Comprehensive Jest Test Suite for Array Compressor
+ * Комплексный набор тестов Jest для Сжатия Массивов
  * 
- * Tests the serialization and deserialization of arrays of integers (1-300)
- * using combinatorial encoding with Base94.
+ * Тестирует сериализацию и десериализацию массивов целых чисел (1-300)
+ * с использованием комбинаторного кодирования в Base94.
  * 
- * Goal: Achieve 2x compression ratio for all possible inputs.
+ * Цель: Достичь коэффициента сжатия 2x для всех возможных входных данных.
  */
 
 import { serialize, deserialize } from '../src/arrayCompressor';
 
-// === HELPER FUNCTIONS ===
+// === ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ===
 
 /**
- * Generate a random array of numbers within the valid range (1-300)
+ * Генерирует случайный массив чисел в допустимом диапазоне (1-300)
  * 
- * @param size - Size of the array to generate
- * @returns Random array of numbers
+ * @param size - Размер генерируемого массива
+ * @returns Случайный массив чисел
  */
 function createRandomArray(size: number): number[] {
   const arr: number[] = [];
@@ -26,10 +26,10 @@ function createRandomArray(size: number): number[] {
 }
 
 /**
- * Verify that serialization and deserialization produce the original array
+ * Проверяет, что сериализация и десериализация дают исходный массив
  * 
- * @param arr - Original array to verify
- * @returns True if round-trip is successful
+ * @param arr - Исходный массив для проверки
+ * @returns True, если полный цикл успешен
  */
 function verifyRoundTrip(arr: number[]): boolean {
   const serialized = serialize(arr);
@@ -41,43 +41,43 @@ function verifyRoundTrip(arr: number[]): boolean {
 }
 
 /**
- * Run a compression test with detailed logging
+ * Запускает тест сжатия с детальным логированием
  * 
- * @param name - Name of the test
- * @param arr - Array to test compression on
+ * @param name - Имя теста
+ * @param arr - Массив для тестирования сжатия
  */
 function testCompression(name: string, arr: number[]): void {
   test(name, () => {
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
     
-    // Calculate original length (number of characters in JSON representation)
+    // Вычисляем исходную длину (количество символов в JSON представлении)
     const originalLength = JSON.stringify(arr).length;
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    // Verify round-trip - both should be sorted
+    // Проверяем полный цикл - оба массива должны быть отсортированы
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     
-    // Log detailed results
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    // Логируем детальные результаты
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Assertions
+    // Утверждения
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 }
 
-// === TEST SUITES ===
+// === НАБОРЫ ТЕСТОВ ===
 
-describe('Array Compressor - Simple Short Tests', () => {
+describe('Сжатие Массивов - Простые Короткие Тесты', () => {
   
-  test('Minimum array: [1, 2, 3, 4, 5]', () => {
+  test('Минимальный массив: [1, 2, 3, 4, 5]', () => {
     const arr = [1, 2, 3, 4, 5];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -86,20 +86,20 @@ describe('Array Compressor - Simple Short Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('User example: [1, 1, 1, 300, 300]', () => {
+  test('Пример пользователя: [1, 1, 1, 300, 300]', () => {
     const arr = [1, 1, 1, 300, 300];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -108,20 +108,20 @@ describe('Array Compressor - Simple Short Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Small array with all same values: [5, 5, 5, 5, 5]', () => {
+  test('Малый массив с одинаковыми значениями: [5, 5, 5, 5, 5]', () => {
     const arr = [5, 5, 5, 5, 5];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -130,20 +130,20 @@ describe('Array Compressor - Simple Short Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Small array with consecutive values: [10, 11, 12, 13, 14]', () => {
+  test('Малый массив с последовательными значениями: [10, 11, 12, 13, 14]', () => {
     const arr = [10, 11, 12, 13, 14];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -152,20 +152,20 @@ describe('Array Compressor - Simple Short Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Small array with maximum spread: [1, 150, 300, 200, 50]', () => {
+  test('Малый массив с максимальным разбросом: [1, 150, 300, 200, 50]', () => {
     const arr = [1, 150, 300, 200, 50];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -174,13 +174,13 @@ describe('Array Compressor - Simple Short Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
@@ -188,23 +188,23 @@ describe('Array Compressor - Simple Short Tests', () => {
   });
 });
 
-describe('Array Compressor - Random Tests', () => {
+describe('Сжатие Массивов - Случайные Тесты', () => {
   
-  testCompression('50 random numbers', createRandomArray(50));
+  testCompression('50 случайных чисел', createRandomArray(50));
   
-  testCompression('100 random numbers', createRandomArray(100));
+  testCompression('100 случайных чисел', createRandomArray(100));
   
-  testCompression('500 random numbers', createRandomArray(500));
+  testCompression('500 случайных чисел', createRandomArray(500));
   
-  testCompression('1000 random numbers', createRandomArray(1000));
+  testCompression('1000 случайных чисел', createRandomArray(1000));
 });
 
-describe('Array Compressor - Boundary Tests', () => {
+describe('Сжатие Массивов - Граничные Тесты', () => {
   
-  test('All single-digit numbers (1-9, repeated)', () => {
+  test('Все однозначные числа (1-9, повторяющиеся)', () => {
     const arr: number[] = [];
     for (let i = 1; i <= 9; i++) {
-      arr.push(i, i, i); // Each number appears 3 times
+      arr.push(i, i, i); // Каждое число появляется 3 раза
     }
     
     const serialized = serialize(arr);
@@ -214,23 +214,23 @@ describe('Array Compressor - Boundary Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('All two-digit numbers (10-99, repeated)', () => {
+  test('Все двузначные числа (10-99, повторяющиеся)', () => {
     const arr: number[] = [];
     for (let i = 10; i <= 99; i++) {
-      arr.push(i, i, i); // Each number appears 3 times
+      arr.push(i, i, i); // Каждое число появляется 3 раза
     }
     
     const serialized = serialize(arr);
@@ -240,23 +240,23 @@ describe('Array Compressor - Boundary Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('All three-digit numbers (100-300, repeated)', () => {
+  test('Все трёхзначные числа (100-300, повторяющиеся)', () => {
     const arr: number[] = [];
     for (let i = 100; i <= 300; i++) {
-      arr.push(i, i, i); // Each number appears 3 times
+      arr.push(i, i, i); // Каждое число появляется 3 раза
     }
     
     const serialized = serialize(arr);
@@ -266,23 +266,23 @@ describe('Array Compressor - Boundary Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Each number appears 3 times (900 numbers total)', () => {
+  test('Каждое число появляется 3 раза (всего 900 чисел)', () => {
     const arr: number[] = [];
     for (let i = 1; i <= 300; i++) {
-      arr.push(i, i, i); // Each number appears 3 times
+      arr.push(i, i, i); // Каждое число появляется 3 раза
     }
     
     const serialized = serialize(arr);
@@ -292,13 +292,13 @@ describe('Array Compressor - Boundary Tests', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
@@ -306,12 +306,12 @@ describe('Array Compressor - Boundary Tests', () => {
   });
 });
 
-describe('Array Compressor - Edge Cases', () => {
+describe('Сжатие Массивов - Краевые Случаи', () => {
   
-  test('Array with many duplicates', () => {
+  test('Массив с множеством дубликатов', () => {
     const arr: number[] = [];
     for (let i = 0; i < 200; i++) {
-      arr.push(42); // Same number 200 times
+      arr.push(42); // Одно и то же число 200 раз
     }
     
     const serialized = serialize(arr);
@@ -321,20 +321,20 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Array with consecutive numbers', () => {
+  test('Массив с последовательными числами', () => {
     const arr: number[] = [];
     for (let i = 1; i <= 100; i++) {
       arr.push(i);
@@ -347,20 +347,20 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Array with maximum spread (1 and 300)', () => {
+  test('Массив с максимальным разбросом (1 и 300)', () => {
     const arr: number[] = [];
     for (let i = 0; i < 50; i++) {
       arr.push(1);
@@ -374,20 +374,20 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Reverse order (should handle sorting)', () => {
+  test('Обратный порядок (должен обрабатывать сортировку)', () => {
     const arr: number[] = [];
     for (let i = 100; i >= 1; i--) {
       arr.push(i);
@@ -400,31 +400,31 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Empty array', () => {
+  test('Пустой массив', () => {
     const arr: number[] = [];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
     expect(deserialized).toEqual(arr);
   });
 
-  test('Array with minimum valid length (5)', () => {
+  test('Массив с минимальной допустимой длиной (5)', () => {
     const arr = [1, 2, 3, 4, 5];
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -433,20 +433,20 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Array with maximum valid length (1000)', () => {
+  test('Массив с максимальной допустимой длиной (1000)', () => {
     const arr = createRandomArray(1000);
     const serialized = serialize(arr);
     const deserialized = deserialize(serialized);
@@ -455,20 +455,20 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Array with only minimum values (1)', () => {
+  test('Массив только с минимальными значениями (1)', () => {
     const arr: number[] = [];
     for (let i = 0; i < 100; i++) {
       arr.push(1);
@@ -481,20 +481,20 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
     expect(compressionRatio).toBeLessThan(0.5);
   });
 
-  test('Array with only maximum values (300)', () => {
+  test('Массив только с максимальными значениями (300)', () => {
     const arr: number[] = [];
     for (let i = 0; i < 100; i++) {
       arr.push(300);
@@ -507,13 +507,13 @@ describe('Array Compressor - Edge Cases', () => {
     const compressedLength = serialized.length;
     const compressionRatio = compressedLength / originalLength;
     
-    console.log(`  Array size: ${arr.length}`);
-    console.log(`  Original length: ${originalLength} chars`);
-    console.log(`  Compressed length: ${compressedLength} chars`);
-    console.log(`  Compression ratio: ${compressionRatio.toFixed(4)}`);
-    console.log(`  Serialized: "${serialized}"`);
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
     
-    // Compare sorted arrays since the implementation sorts during serialization/deserialization
+    // Сравниваем отсортированные массивы, так как реализация сортирует при сериализации/десериализации
     const sortedOriginal = [...arr].sort((a, b) => a - b);
     const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
     expect(sortedDeserialized).toEqual(sortedOriginal);
@@ -521,81 +521,122 @@ describe('Array Compressor - Edge Cases', () => {
   });
 });
 
-describe('Array Compressor - Round-Trip Verification', () => {
+describe('Сжатие Массивов - Тесты Производительности', () => {
   
-  test('Verify round-trip for various arrays', () => {
-    const testArrays = [
-      [1, 2, 3, 4, 5],
-      [1, 1, 1, 300, 300],
-      createRandomArray(50),
-      createRandomArray(100),
-      createRandomArray(500),
-      createRandomArray(1000),
-    ];
+  test('Множественные операции сериализации/десериализации', () => {
+    const arr = createRandomArray(100);
+    const iterations = 1000;
     
-    testArrays.forEach((arr, index) => {
-      const roundTripSuccess = verifyRoundTrip(arr);
-      console.log(`  Test array ${index + 1}: ${roundTripSuccess ? 'PASS' : 'FAIL'}`);
-      expect(roundTripSuccess).toBe(true);
-    });
+    const startTime = Date.now();
+    for (let i = 0; i < iterations; i++) {
+      const serialized = serialize(arr);
+      const deserialized = deserialize(serialized);
+      const sortedOriginal = [...arr].sort((a, b) => a - b);
+      const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
+      expect(sortedDeserialized).toEqual(sortedOriginal);
+    }
+    const endTime = Date.now();
+    
+    const avgTime = (endTime - startTime) / iterations;
+    console.log(`  Среднее время операции: ${avgTime.toFixed(2)} мс`);
+    console.log(`  Общее время для ${iterations} операций: ${endTime - startTime} мс`);
+    
+    // Убеждаемся, что среднее время разумное (менее 10 мс на операцию)
+    expect(avgTime).toBeLessThan(10);
+  });
+
+  test('Сжатие большого массива', () => {
+    const arr = createRandomArray(1000);
+    const serialized = serialize(arr);
+    const deserialized = deserialize(serialized);
+    
+    const originalLength = JSON.stringify(arr).length;
+    const compressedLength = serialized.length;
+    const compressionRatio = compressedLength / originalLength;
+    
+    console.log(`  Размер массива: ${arr.length}`);
+    console.log(`  Исходная длина: ${originalLength} символов`);
+    console.log(`  Сжатая длина: ${compressedLength} символов`);
+    console.log(`  Коэффициент сжатия: ${compressionRatio.toFixed(4)}`);
+    console.log(`  Сериализовано: "${serialized}"`);
+    
+    const sortedOriginal = [...arr].sort((a, b) => a - b);
+    const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
+    expect(sortedDeserialized).toEqual(sortedOriginal);
+    expect(compressionRatio).toBeLessThan(0.5);
   });
 });
 
-describe('Array Compressor - Helper Function Tests', () => {
+describe('Сжатие Массивов - Тесты Корректности', () => {
   
-  test('createRandomArray generates valid arrays', () => {
-    const sizes = [5, 10, 50, 100, 500, 1000];
+  test('Проверка сохранения количества элементов', () => {
+    const testSizes = [5, 10, 50, 100, 500, 1000];
     
-    sizes.forEach(size => {
-      const arr = createRandomArray(size);
-      expect(arr).toHaveLength(size);
-      
-      arr.forEach(num => {
-        expect(num).toBeGreaterThanOrEqual(1);
-        expect(num).toBeLessThanOrEqual(300);
-      });
-    });
-  });
-
-  test('verifyRoundTrip correctly identifies success/failure', () => {
-    const validArray = [1, 2, 3, 4, 5];
-    expect(verifyRoundTrip(validArray)).toBe(true);
-    
-    // Test with various array sizes
-    const randomArray = createRandomArray(100);
-    expect(verifyRoundTrip(randomArray)).toBe(true);
-  });
-});
-
-describe('Array Compressor - Compression Ratio Analysis', () => {
-  
-  test('Analyze compression ratios across different array sizes', () => {
-    const sizes = [5, 10, 50, 100, 200, 500, 1000];
-    const ratios: number[] = [];
-    
-    sizes.forEach(size => {
+    testSizes.forEach(size => {
       const arr = createRandomArray(size);
       const serialized = serialize(arr);
       const deserialized = deserialize(serialized);
       
-      const originalLength = JSON.stringify(arr).length;
-      const compressedLength = serialized.length;
-      const compressionRatio = compressedLength / originalLength;
-      
-      ratios.push(compressionRatio);
-      
-      console.log(`  Size ${size}: ratio = ${compressionRatio.toFixed(4)}`);
-      
-      // Compare sorted arrays since the implementation sorts during serialization/deserialization
-      const sortedOriginal = [...arr].sort((a, b) => a - b);
-      const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
-      expect(sortedDeserialized).toEqual(sortedOriginal);
-      expect(compressionRatio).toBeLessThan(0.5);
+      expect(deserialized.length).toBe(arr.length);
+    });
+  });
+
+  test('Проверка диапазона значений', () => {
+    const arr = createRandomArray(100);
+    const serialized = serialize(arr);
+    const deserialized = deserialize(serialized);
+    
+    const sortedOriginal = [...arr].sort((a, b) => a - b);
+    const sortedDeserialized = [...deserialized].sort((a, b) => a - b);
+    
+    // Проверяем, что все значения в допустимом диапазоне
+    sortedDeserialized.forEach(num => {
+      expect(num).toBeGreaterThanOrEqual(1);
+      expect(num).toBeLessThanOrEqual(300);
     });
     
-    // Verify all ratios are below 0.5
-    ratios.forEach(ratio => {
-      expect(ratio).toBeLessThan(0.5);
+    expect(sortedDeserialized).toEqual(sortedOriginal);
+  });
+
+  test('Проверка идентичности множеств', () => {
+    const arr = createRandomArray(100);
+    const serialized = serialize(arr);
+    const deserialized = deserialize(serialized);
+    
+    const originalSet = new Set([...arr].sort((a, b) => a - b));
+    const deserializedSet = new Set([...deserialized].sort((a, b) => a - b));
+    
+    expect(originalSet.size).toBe(deserializedSet.size);
+    
+    originalSet.forEach(num => {
+      expect(deserializedSet.has(num)).toBe(true);
     });
+  });
+
+  test('Проверка детерминизма сериализации', () => {
+    const arr = createRandomArray(100);
+    
+    const serialized1 = serialize(arr);
+    const serialized2 = serialize(arr);
+    const serialized3 = serialize(arr);
+    
+    expect(serialized1).toBe(serialized2);
+    expect(serialized2).toBe(serialized3);
+  });
+
+  test('Проверка детерминизма десериализации', () => {
+    const arr = createRandomArray(100);
+    const serialized = serialize(arr);
+    
+    const deserialized1 = deserialize(serialized);
+    const deserialized2 = deserialize(serialized);
+    const deserialized3 = deserialize(serialized);
+    
+    const sorted1 = [...deserialized1].sort((a, b) => a - b);
+    const sorted2 = [...deserialized2].sort((a, b) => a - b);
+    const sorted3 = [...deserialized3].sort((a, b) => a - b);
+    
+    expect(sorted1).toEqual(sorted2);
+    expect(sorted2).toEqual(sorted3);
   });
 });

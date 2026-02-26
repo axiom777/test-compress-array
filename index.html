@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Array Compressor - Visual Interface</title>
+    <title>Сжатие Массивов - Визуальный Интерфейс</title>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🗜️ Array Compressor</h1>
-            <p>Compress arrays of integers (1-300) using combinatorial encoding with Base94</p>
+            <h1>🗜️ Сжатие Массивов</h1>
+            <p>Сжатие массивов целых чисел (1-300) с использованием комбинаторного кодирования в Base94</p>
         </header>
 
         <div class="main-content">
@@ -18,38 +18,38 @@
 
             <!-- Input Section -->
             <div class="section">
-                <h2 class="section-title">Input Data</h2>
+                <h2 class="section-title">Входные Данные</h2>
                 <div class="input-section">
                     <div class="input-group">
-                        <label for="inputArray">Enter numbers (comma-separated):</label>
-                        <textarea id="inputArray" placeholder="Example: 1, 5, 10, 15, 20, 25, 30, 35, 40, 45"></textarea>
+                        <label for="inputArray">Введите числа (через запятую):</label>
+                        <textarea id="inputArray" placeholder="Пример: 1, 5, 10, 15, 20, 25, 30, 35, 40, 45"></textarea>
                         
                         <div class="buttons-grid">
-                            <button class="btn-primary" onclick="compressArray()">Compress</button>
-                            <button class="btn-secondary" onclick="decompressArray()">Decompress</button>
-                            <button class="btn-success" onclick="generateRandom()">Generate Random</button>
-                            <button class="btn-info" onclick="roundTripTest()">Round Trip Test</button>
+                            <button class="btn-primary" onclick="compressArray()">Сжать</button>
+                            <button class="btn-secondary" onclick="decompressArray()">Распаковать</button>
+                            <button class="btn-success" onclick="generateRandom()">Случайные</button>
+                            <button class="btn-info" onclick="roundTripTest()">Тест Цикла</button>
                         </div>
                     </div>
 
                     <div class="input-group">
-                        <label>Preset Test Cases:</label>
+                        <label>Готовые Тесты:</label>
                         <div class="buttons-grid">
-                            <button class="btn-preset" onclick="loadPreset('minimal')">Minimal (5)</button>
-                            <button class="btn-preset" onclick="loadPreset('userExample')">User Example</button>
-                            <button class="btn-preset" onclick="loadPreset('random50')">Random 50</button>
-                            <button class="btn-preset" onclick="loadPreset('random100')">Random 100</button>
-                            <button class="btn-preset" onclick="loadPreset('random200')">Random 200</button>
-                            <button class="btn-preset" onclick="loadPreset('large')">Large (500)</button>
+                            <button class="btn-preset" onclick="loadPreset('minimal')">Минимальный (5)</button>
+                            <button class="btn-preset" onclick="loadPreset('userExample')">Пример Пользователя</button>
+                            <button class="btn-preset" onclick="loadPreset('random50')">Случайные 50</button>
+                            <button class="btn-preset" onclick="loadPreset('random100')">Случайные 100</button>
+                            <button class="btn-preset" onclick="loadPreset('random200')">Случайные 200</button>
+                            <button class="btn-preset" onclick="loadPreset('large')">Большой (500)</button>
                         </div>
 
                         <div class="validation-info">
-                            <h4>📋 Validation Rules:</h4>
+                            <h4>📋 Правила Валидации:</h4>
                             <ul>
-                                <li>Numbers must be between <strong>1 and 300</strong></li>
-                                <li>Array length must be between <strong>5 and 1000</strong></li>
-                                <li>Duplicates are allowed (will be sorted)</li>
-                                <li>Enter numbers separated by commas or spaces</li>
+                                <li>Числа должны быть в диапазоне от <strong>1 до 300</strong></li>
+                                <li>Длина массива должна быть от <strong>5 до 1000</strong></li>
+                                <li>Дубликаты разрешены (будут отсортированы)</li>
+                                <li>Вводите числа через запятую или пробелы</li>
                             </ul>
                         </div>
                     </div>
@@ -58,20 +58,20 @@
 
             <!-- Output Section -->
             <div class="section">
-                <h2 class="section-title">Output Results</h2>
+                <h2 class="section-title">Результаты</h2>
                 <div class="output-section">
                     <div>
-                        <span class="output-label">Original Array (sorted):</span>
+                        <span class="output-label">Исходный Массив (отсортированный):</span>
                         <div id="originalOutput" class="output-box original"></div>
                     </div>
 
                     <div>
-                        <span class="output-label">Compressed String:</span>
+                        <span class="output-label">Сжатая Строка:</span>
                         <div id="compressedOutput" class="output-box compressed"></div>
                     </div>
 
                     <div>
-                        <span class="output-label">Decompressed Array (verification):</span>
+                        <span class="output-label">Распакованный Массив (проверка):</span>
                         <div id="decompressedOutput" class="output-box decompressed"></div>
                     </div>
                 </div>
@@ -79,30 +79,30 @@
 
             <!-- Statistics Section -->
             <div class="section">
-                <h2 class="section-title">Compression Statistics</h2>
+                <h2 class="section-title">Статистика Сжатия</h2>
                 <div class="statistics">
                     <div class="stat-card">
                         <div id="originalLength" class="stat-value">0</div>
-                        <div class="stat-label">Original Length (chars)</div>
+                        <div class="stat-label">Исходная Длина (символов)</div>
                     </div>
                     <div class="stat-card">
                         <div id="compressedLength" class="stat-value">0</div>
-                        <div class="stat-label">Compressed Length (chars)</div>
+                        <div class="stat-label">Сжатая Длина (символов)</div>
                     </div>
                     <div class="stat-card" id="ratioCard">
                         <div id="compressionRatio" class="stat-value">0:1</div>
-                        <div class="stat-label">Compression Ratio</div>
+                        <div class="stat-label">Коэффициент Сжатия</div>
                     </div>
                     <div class="stat-card" id="percentageCard">
                         <div id="compressionPercentage" class="stat-value">0%</div>
-                        <div class="stat-label">Compression %</div>
+                        <div class="stat-label">Сжатие %</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer>
-            <p>Array Compressor - TypeScript Implementation | Supports arrays of length 5-1000 with values 1-300</p>
+            <p>Сжатие Массивов - Реализация на TypeScript | Поддерживает массивы длиной 5-1000 со значениями 1-300</p>
         </footer>
     </div>
 

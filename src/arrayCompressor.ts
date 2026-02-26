@@ -1,19 +1,19 @@
 /**
- * Array Compressor - TypeScript Implementation
+ * Array Compressor - Реализация на TypeScript
  * 
- * Compresses arrays of integers (1-300) using combinatorial encoding with Base94.
- * Supports arrays of length 5-1000.
+ * Сжимает массивы целых чисел (1-300) с использованием комбинаторного кодирования в Base94.
+ * Поддерживает массивы длиной от 5 до 1000 элементов.
  */
 
-// === CONSTANTS ===
+// === КОНСТАНТЫ ===
 
 /**
- * Base94 alphabet containing ASCII characters 33-126
+ * Алфавит Base94, содержащий ASCII символы 33-126
  */
 export const ALPHABET: string = Array.from({ length: 94 }, (_, i) => String.fromCharCode(i + 33)).join('');
 
 /**
- * Reverse mapping from characters to their BigInt values
+ * Обратное отображение символов в их значения BigInt
  */
 export const CHAR_MAP: Record<string, bigint> = (() => {
   const map: Record<string, bigint> = {};
@@ -24,28 +24,28 @@ export const CHAR_MAP: Record<string, bigint> = (() => {
 })();
 
 /**
- * Base number for encoding (94)
+ * Основание системы счисления для кодирования (94)
  */
 export const BASE: bigint = 94n;
 
 /**
- * Maximum value allowed in arrays (300)
+ * Максимальное допустимое значение в массивах (300)
  */
 export const MAX_VAL: bigint = 300n;
 
 /**
- * Minimum array length (5)
+ * Минимальная длина массива (5)
  */
 export const MIN_LEN: bigint = 5n;
 
-// === MATH FUNCTIONS ===
+// === МАТЕМАТИЧЕСКИЕ ФУНКЦИИ ===
 
 /**
- * Calculate binomial coefficient nCr (n choose k)
+ * Вычисляет биномиальный коэффициент nCr (n выбрать k)
  * 
- * @param n - Total number of items
- * @param k - Number of items to choose
- * @returns The binomial coefficient as a BigInt
+ * @param n - Общее количество элементов
+ * @param k - Количество выбираемых элементов
+ * @returns Биномиальный коэффициент в виде BigInt
  */
 export function nCr(n: bigint, k: bigint): bigint {
   if (k < 0n || k > n) return 0n;
@@ -60,22 +60,22 @@ export function nCr(n: bigint, k: bigint): bigint {
 }
 
 /**
- * Calculate the size of a bucket for arrays of length n
+ * Вычисляет размер корзины для массивов длиной n
  * 
- * @param n - Length of the array
- * @returns The bucket size as a BigInt
+ * @param n - Длина массива
+ * @returns Размер корзины в виде BigInt
  */
 export function getBucketSize(n: bigint): bigint {
   return nCr(MAX_VAL + n - 1n, n);
 }
 
-// === SERIALIZATION ===
+// === СЕРИАЛИЗАЦИЯ ===
 
 /**
- * Serialize an array of numbers to a compressed Base94 string
+ * Сериализует массив чисел в сжатую строку Base94
  * 
- * @param nums - Array of numbers to serialize (values 1-300, length 5-1000)
- * @returns Compressed Base94 string representation
+ * @param nums - Массив чисел для сериализации (значения 1-300, длина 5-1000)
+ * @returns Сжатое строковое представление в Base94
  */
 export function serialize(nums: number[]): string {
   if (!nums || nums.length === 0) return "";
@@ -83,14 +83,14 @@ export function serialize(nums: number[]): string {
   const sorted = [...nums].sort((a, b) => a - b);
   const n = BigInt(sorted.length);
 
-  // 1. Calculate offset for arrays >= MIN_LEN (5)
+  // 1. Вычисляем смещение для массивов >= MIN_LEN (5)
   let offset = 0n;
-  // Loop from MIN_LEN (5) to n-1
+  // Цикл от MIN_LEN (5) до n-1
   for (let k = MIN_LEN; k < n; k++) {
     offset += getBucketSize(k);
   }
 
-  // 2. Calculate index within the bucket
+  // 2. Вычисляем индекс внутри корзины
   let index = 0n;
   for (let i = 0n; i < n; i++) {
     const val = BigInt(sorted[Number(i)]);
@@ -103,7 +103,7 @@ export function serialize(nums: number[]): string {
 
   let fullIndex = offset + index;
 
-  // 3. Convert to Base94 string
+  // 3. Преобразуем в строку Base94
   if (fullIndex === 0n) return ALPHABET[0];
   
   let res = "";
@@ -115,29 +115,29 @@ export function serialize(nums: number[]): string {
   return res;
 }
 
-// === DESERIALIZATION ===
+// === ДЕСЕРИАЛИЗАЦИЯ ===
 
 /**
- * Deserialize a Base94 string back to an array of numbers
+ * Десериализует строку Base94 обратно в массив чисел
  * 
- * @param s - Base94 string to deserialize
- * @returns Array of numbers (sorted, values 1-300)
+ * @param s - Строка Base94 для десериализации
+ * @returns Массив чисел (отсортированный, значения 1-300)
  */
 export function deserialize(s: string): number[] {
   if (!s) return [];
 
-  // Parse Base94 string to BigInt
+  // Парсим строку Base94 в BigInt
   let fullIndex = 0n;
   for (const char of s) {
     fullIndex = fullIndex * BASE + CHAR_MAP[char];
   }
 
-  // 1. Determine array length by finding the correct bucket
+  // 1. Определяем длину массива, находя правильную корзину
   let n = MIN_LEN;
   let offset = 0n;
   let size = getBucketSize(n);
   
-  // While the number is greater than the current bucket, jump to the next
+  // Пока число больше текущей корзины, переходим к следующей
   while (fullIndex >= offset + size) {
     offset += size;
     n++;
@@ -147,7 +147,7 @@ export function deserialize(s: string): number[] {
   let index = fullIndex - offset;
   const nums: number[] = [];
 
-  // 2. Decode numbers using binary search
+  // 2. Декодируем числа с помощью бинарного поиска
   for (let i = n; i >= 1n; i--) {
     let low = i - 1n;
     let high = MAX_VAL + i;

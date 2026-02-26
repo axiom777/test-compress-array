@@ -1,7 +1,7 @@
 import { serialize, deserialize } from './arrayCompressor';
 import './styles.css';
 
-// DOM Elements
+// DOM элементы
 const inputArray = document.getElementById('inputArray') as HTMLTextAreaElement;
 const originalOutput = document.getElementById('originalOutput') as HTMLDivElement;
 const compressedOutput = document.getElementById('compressedOutput') as HTMLDivElement;
@@ -14,41 +14,41 @@ const compressionPercentageEl = document.getElementById('compressionPercentage')
 const ratioCard = document.getElementById('ratioCard') as HTMLDivElement;
 const percentageCard = document.getElementById('percentageCard') as HTMLDivElement;
 
-// Show message function
+// Функция отображения сообщения
 function showMessage(text: string, type: string): void {
     messageDiv.innerHTML = text;
     messageDiv.className = `message ${type}`;
     messageDiv.style.display = 'block';
 }
 
-// Clear message function
+// Функция очистки сообщения
 function clearMessage(): void {
     messageDiv.style.display = 'none';
 }
 
-// Validate that input contains only numeric characters
+// Проверяем, что ввод содержит только числовые символы
 function validateNumericInput(input: string): string | null {
-    // Remove all whitespace and commas to check the actual content
+    // Удаляем все пробелы и запятые для проверки фактического содержимого
     const cleanInput = input.replace(/[\s,]+/g, '');
     
     if (cleanInput === '') {
-        return null; // Empty input is handled elsewhere
+        return null; // Пустой ввод обрабатывается в другом месте
     }
     
-    // Check if the input contains only digits (0-9)
+    // Проверяем, содержит ли ввод только цифры (0-9)
     if (!/^\d+$/.test(cleanInput)) {
-        // Find and report non-numeric characters
+        // Находим и сообщаем о нечисловых символах
         const nonNumericChars = cleanInput.replace(/\d/g, '');
         const uniqueChars = [...new Set(nonNumericChars.split(''))].join(', ');
         return `❌ Ввод содержит недопустимые символы: "${uniqueChars}". Разрешены только цифры (0-9).`;
     }
     
-    return null; // Input is valid
+    return null; // Ввод корректен
 }
 
-// Parse input array
+// Парсим входной массив
 function parseInput(input: string): number[] {
-    // Split by comma or space, filter empty strings
+    // Разделяем по запятой или пробелу, фильтруем пустые строки
     const numbers = input
         .split(/[,\s]+/)
         .map(s => s.trim())
@@ -58,20 +58,20 @@ function parseInput(input: string): number[] {
     return numbers.filter(n => !isNaN(n));
 }
 
-// Validate input array
+// Проверяем входной массив
 function validateArray(arr: number[]): string[] {
     const errors: string[] = [];
 
     if (arr.length === 0) {
-        errors.push('❌ Array is empty. Please enter some numbers.');
+        errors.push('❌ Массив пуст. Пожалуйста, введите числа.');
     }
 
     if (arr.length < 5) {
-        errors.push(`❌ Array length (${arr.length}) is less than minimum (5). Need at least ${5 - arr.length} more number${5 - arr.length > 1 ? 's' : ''}.`);
+        errors.push(`❌ Длина массива (${arr.length}) меньше минимальной (5). Нужно ещё ${5 - arr.length} чисел.`);
     }
 
     if (arr.length > 1000) {
-        errors.push(`❌ Array length (${arr.length}) exceeds maximum (1000). Remove ${arr.length - 1000} number${arr.length - 1000 > 1 ? 's' : ''}.`);
+        errors.push(`❌ Длина массива (${arr.length}) превышает максимальную (1000). Удалите ${arr.length - 1000} чисел.`);
     }
 
     const invalidNumbers = arr.filter(n => n < 1 || n > 300);
@@ -80,30 +80,30 @@ function validateArray(arr: number[]): string[] {
         const aboveMax = invalidNumbers.filter(n => n > 300);
 
         if (belowMin.length > 0) {
-            errors.push(`❌ Numbers below minimum (1): ${belowMin.slice(0, 3).join(', ')}${belowMin.length > 3 ? '...' : ''}`);
+            errors.push(`❌ Числа меньше минимума (1): ${belowMin.slice(0, 3).join(', ')}${belowMin.length > 3 ? '...' : ''}`);
         }
 
         if (aboveMax.length > 0) {
-            errors.push(`❌ Numbers above maximum (300): ${aboveMax.slice(0, 3).join(', ')}${aboveMax.length > 3 ? '...' : ''}`);
+            errors.push(`❌ Числа больше максимума (300): ${aboveMax.slice(0, 3).join(', ')}${aboveMax.length > 3 ? '...' : ''}`);
         }
     }
 
-    // Check for duplicates (informational, not an error)
+    // Проверяем дубликаты (информационно, не ошибка)
     const uniqueNumbers = new Set(arr);
     if (uniqueNumbers.size < arr.length) {
-        errors.push(`ℹ️ Note: Array contains ${arr.length - uniqueNumbers.size} duplicate(s). Duplicates are allowed.`);
+        errors.push(`ℹ️ Примечание: Массив содержит ${arr.length - uniqueNumbers.size} дубликатов. Дубликаты разрешены.`);
     }
 
     return errors;
 }
 
-// Format array for display
+// Форматируем массив для отображения
 function formatArray(arr: number[]): string {
-    if (arr.length === 0) return 'Empty array';
+    if (arr.length === 0) return 'Пустой массив';
     return arr.join(', ');
 }
 
-// Update statistics
+// Обновляем статистику
 function updateStatistics(originalStr: string, compressedStr: string): void {
     const originalLen = originalStr.length;
     const compressedLen = compressedStr.length;
@@ -118,7 +118,7 @@ function updateStatistics(originalStr: string, compressedStr: string): void {
         compressionRatioEl.textContent = `${ratio}:1`;
         compressionPercentageEl.textContent = `${percentage}%`;
 
-        // Color coding based on compression
+        // Цветовое кодирование на основе сжатия
         if (parseFloat(percentage) > 0) {
             ratioCard.className = 'stat-card good';
             percentageCard.className = 'stat-card good';
@@ -134,13 +134,13 @@ function updateStatistics(originalStr: string, compressedStr: string): void {
     }
 }
 
-// Compress array
+// Сжимаем массив
 function compressArray(): void {
     clearMessage();
 
     const input = inputArray.value;
 
-    // Validate that input contains only numeric characters
+    // Проверяем, что ввод содержит только числовые символы
     const numericValidationError = validateNumericInput(input);
     if (numericValidationError) {
         showMessage(numericValidationError, 'error');
@@ -164,36 +164,36 @@ function compressArray(): void {
     }
 
     try {
-        // Sort and display original
+        // Сортируем и отображаем оригинал
         const sorted = [...arr].sort((a, b) => a - b);
         originalOutput.textContent = formatArray(sorted);
 
-        // Compress
+        // Сжимаем
         const compressed = serialize(arr);
         compressedOutput.textContent = compressed;
 
-        // Clear decompressed for now
+        // Очищаем декомпрессированные данные пока
         decompressedOutput.textContent = '';
 
-        // Update statistics
+        // Обновляем статистику
         const originalStr = sorted.join(', ');
         updateStatistics(originalStr, compressed);
 
-        showMessage('✅ Compression successful!', 'success');
+        showMessage('✅ Сжатие выполнено успешно!', 'success');
     } catch (error) {
-        showMessage('❌ Compression error: ' + (error as Error).message, 'error');
+        showMessage('❌ Ошибка сжатия: ' + (error as Error).message, 'error');
         console.error(error);
     }
 }
 
-// Decompress array
+// Декомпрессируем массив
 function decompressArray(): void {
     clearMessage();
 
     const compressed = compressedOutput.textContent.trim();
 
     if (!compressed) {
-        showMessage('❌ No compressed data to decompress. Please compress an array first.', 'error');
+        showMessage('❌ Нет данных для распаковки. Пожалуйста, сначала сожмите массив.', 'error');
         return;
     }
 
@@ -201,22 +201,22 @@ function decompressArray(): void {
         const decompressed = deserialize(compressed);
         decompressedOutput.textContent = formatArray(decompressed);
 
-        // Verify
+        // Проверяем
         const original = parseInput(originalOutput.textContent);
         const match = JSON.stringify(original) === JSON.stringify(decompressed);
 
         if (match) {
-            showMessage('✅ Decompression successful! Data verified.', 'success');
+            showMessage('✅ Распаковка выполнена успешно! Данные проверены.', 'success');
         } else {
-            showMessage('⚠️ Decompression completed but data mismatch detected.', 'info');
+            showMessage('⚠️ Распаковка завершена, но обнаружено несоответствие данных.', 'info');
         }
     } catch (error) {
-        showMessage('❌ Decompression error: ' + (error as Error).message, 'error');
+        showMessage('❌ Ошибка распаковки: ' + (error as Error).message, 'error');
         console.error(error);
     }
 }
 
-// Generate random array
+// Генерируем случайный массив
 function generateRandom(): void {
     const length = Math.floor(Math.random() * 95) + 5; // 5-100
     const arr: number[] = [];
@@ -226,16 +226,16 @@ function generateRandom(): void {
     }
 
     inputArray.value = arr.join(', ');
-    showMessage(`🎲 Generated random array with ${length} elements`, 'info');
+    showMessage(`🎲 Сгенерирован случайный массив из ${length} элементов`, 'info');
 }
 
-// Round trip test
+// Тест полного цикла
 function roundTripTest(): void {
     clearMessage();
 
     const input = inputArray.value;
 
-    // Validate that input contains only numeric characters
+    // Проверяем, что ввод содержит только числовые символы
     const numericValidationError = validateNumericInput(input);
     if (numericValidationError) {
         showMessage(numericValidationError, 'error');
@@ -258,39 +258,39 @@ function roundTripTest(): void {
     }
 
     try {
-        // Compress
+        // Сжимаем
         const compressed = serialize(arr);
-        // Decompress
+        // Декомпрессируем
         const decompressed = deserialize(compressed);
 
-        // Sort both for comparison
+        // Сортируем оба для сравнения
         const sortedOriginal = [...arr].sort((a, b) => a - b);
         const sortedDecompressed = [...decompressed].sort((a, b) => a - b);
 
-        // Display results
+        // Отображаем результаты
         originalOutput.textContent = formatArray(sortedOriginal);
         compressedOutput.textContent = compressed;
         decompressedOutput.textContent = formatArray(sortedDecompressed);
 
-        // Update statistics
+        // Обновляем статистику
         const originalStr = sortedOriginal.join(', ');
         updateStatistics(originalStr, compressed);
 
-        // Verify
+        // Проверяем
         const match = JSON.stringify(sortedOriginal) === JSON.stringify(sortedDecompressed);
 
         if (match) {
-            showMessage('✅ Round-trip test passed! Original and decompressed arrays match.', 'success');
+            showMessage('✅ Тест полного цикла пройден! Исходный и распакованный массивы совпадают.', 'success');
         } else {
-            showMessage('❌ Round-trip test failed! Arrays do not match.', 'error');
+            showMessage('❌ Тест полного цикла не пройден! Массивы не совпадают.', 'error');
         }
     } catch (error) {
-        showMessage('❌ Round-trip test error: ' + (error as Error).message, 'error');
+        showMessage('❌ Ошибка теста полного цикла: ' + (error as Error).message, 'error');
         console.error(error);
     }
 }
 
-// Load preset test cases
+// Загружаем предустановленные тестовые случаи
 function loadPreset(preset: string): void {
     let arr: number[] = [];
 
@@ -324,9 +324,9 @@ function loadPreset(preset: string): void {
     }
 
     inputArray.value = arr.join(', ');
-    showMessage(`📋 Loaded preset: ${preset} (${arr.length} elements)`, 'info');
+    showMessage(`📋 Загружен пресет: ${preset} (${arr.length} элементов)`, 'info');
 
-    // Clear outputs
+    // Очищаем выводы
     originalOutput.textContent = '';
     compressedOutput.textContent = '';
     decompressedOutput.textContent = '';
@@ -336,12 +336,12 @@ function loadPreset(preset: string): void {
     compressionPercentageEl.textContent = '0%';
 }
 
-// Initialize with example
+// Инициализация с примером
 window.onload = function (): void {
     loadPreset('userExample');
 };
 
-// Expose functions to window for HTML onclick handlers
+// Экспортируем функции в window для HTML onclick обработчиков
 (window as any).compressArray = compressArray;
 (window as any).decompressArray = decompressArray;
 (window as any).generateRandom = generateRandom;
